@@ -1,55 +1,56 @@
 /**
-  * Validates a cron expression.
-  *
-  * @param cronExpression The expression to validate
-  * @return True is expression is valid
-  */
- export function cronValidate(cronExpression) {
-   if(!cronExpression){
-     return false;
-   }
-  //alert("校验函数的开始！");
+ * Validates a cron expression.
+ *
+ * @param cronExpression The expression to validate
+ * @return True is expression is valid
+ */
+// eslint-disable-next-line import/prefer-default-export
+export function cronValidate(cronExpression) {
+  if (!cronExpression) {
+    return false;
+  }
+  // alert("校验函数的开始！");
   var cronParams = cronExpression.split(" ");
 
   if (cronParams.length < 6 || cronParams.length > 7) {
     return false;
   }
 
-  //CronTrigger cronTrigger = new CronTrigger();
-  //cronTrigger.setCronExpression( cronExpression );
+  // CronTrigger cronTrigger = new CronTrigger();
+  // cronTrigger.setCronExpression( cronExpression );
 
   if (cronParams[3] == "?" || cronParams[5] == "?") {
-    //Check seconds param
+    // Check seconds param
     if (!checkSecondsField(cronParams[0])) {
       return false;
     }
 
-    //Check minutes param
+    // Check minutes param
     if (!checkMinutesField(cronParams[1])) {
       return false;
     }
 
-    //Check hours param
+    // Check hours param
     if (!checkHoursField(cronParams[2])) {
       return false;
     }
 
-    //Check day-of-month param
+    // Check day-of-month param
     if (!checkDayOfMonthField(cronParams[3])) {
       return false;
     }
 
-    //Check months param
+    // Check months param
     if (!checkMonthsField(cronParams[4])) {
       return false;
     }
 
-    //Check day-of-week param
+    // Check day-of-week param
     if (!checkDayOfWeekField(cronParams[5])) {
       return false;
     }
 
-    //Check year param
+    // Check year param
     if (cronParams.length == 7) {
       if (!checkYearField(cronParams[6])) {
         return false;
@@ -66,13 +67,17 @@ function checkSecondsField(secondsField) {
   return checkField(secondsField, 0, 59);
 }
 
-
 function checkField(secondsField, minimal, maximal) {
   if (secondsField.indexOf("-") > -1) {
     var startValue = secondsField.substring(0, secondsField.indexOf("-"));
     var endValue = secondsField.substring(secondsField.indexOf("-") + 1);
 
-    if (!(checkIntValue(startValue, minimal, maximal, true) && checkIntValue(endValue, minimal, maximal, true))) {
+    if (
+      !(
+        checkIntValue(startValue, minimal, maximal, true) &&
+        checkIntValue(endValue, minimal, maximal, true)
+      )
+    ) {
       return false;
     }
     try {
@@ -97,7 +102,7 @@ function checkField(secondsField, minimal, maximal) {
 function checkIntValue(value, minimal, maximal, checkExtremity) {
   try {
     var val = parseInt(value, 10);
-    //判断是否为整数
+    // 判断是否为整数
     if (value == val) {
       if (checkExtremity) {
         if (val < minimal || val > maximal) {
@@ -138,7 +143,6 @@ function checkDayOfMonthField(dayOfMonthField) {
   }
 }
 
-
 function checkMonthsField(monthsField) {
   /*        monthsField = StringUtils.replace( monthsField, "JAN", "1" );
         monthsField = StringUtils.replace( monthsField, "FEB", "2" );
@@ -178,13 +182,13 @@ function checkDayOfWeekField(dayOfWeekField) {
         dayOfWeekField = StringUtils.replace( dayOfWeekField, "FRI", "6" );
         dayOfWeekField = StringUtils.replace( dayOfWeekField, "SAT", "7" );*/
 
-  dayOfWeekField.replace("SUN", "1");
-  dayOfWeekField.replace("MON", "2");
-  dayOfWeekField.replace("TUE", "3");
-  dayOfWeekField.replace("WED", "4");
-  dayOfWeekField.replace("THU", "5");
-  dayOfWeekField.replace("FRI", "6");
-  dayOfWeekField.replace("SAT", "7");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("SUN", 'g'), "1");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("MON", 'g'), "2");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("TUE", 'g'), "3");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("WED", 'g'), "4");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("THU", 'g'), "5");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("FRI", 'g'), "6");
+  dayOfWeekField = dayOfWeekField.replace(new RegExp("SAT", 'g'), "7");
 
   if (dayOfWeekField == "?") {
     return true;
@@ -205,9 +209,14 @@ function checkYearField(yearField) {
   return checkField(yearField, 1970, 2099);
 }
 
-
-function checkFieldWithLetter(value, letter, minimalBefore, maximalBefore,
-  minimalAfter, maximalAfter) {
+function checkFieldWithLetter(
+  value,
+  letter,
+  minimalBefore,
+  maximalBefore,
+  minimalAfter,
+  maximalAfter
+) {
   var canBeAlone = false;
   var canHaveIntBefore = false;
   var canHaveIntAfter = false;
@@ -294,13 +303,14 @@ function checkIncrementField(value, minimal, maximal) {
   var increment = value.substring(value.indexOf("/") + 1);
 
   if (!("*" == start)) {
-    return checkIntValue(start, minimal, maximal, true) && checkIntValue(increment, minimal, maximal, false);
+    return (
+      checkIntValue(start, minimal, maximal, true) &&
+      checkIntValue(increment, minimal, maximal, false)
+    );
   } else {
     return checkIntValue(increment, minimal, maximal, true);
   }
 }
-
-
 
 function checkListField(value, minimal, maximal) {
   var st = value.split(",");
@@ -311,7 +321,7 @@ function checkListField(value, minimal, maximal) {
     values[j] = st[j];
   }
 
-  var previousValue = -1;
+  // var previousValue = -1;
 
   for (var i = 0; i < values.length; i++) {
     var currentValue = values[i];
@@ -320,17 +330,17 @@ function checkListField(value, minimal, maximal) {
       return false;
     }
 
-    try {
-      var val = parseInt(currentValue, 10);
-
-      if (val <= previousValue) {
-        return false;
-      } else {
-        previousValue = val;
-      }
-    } catch (e) {
+    // try {
+      // var val = parseInt(currentValue, 10);
+      // previousValue = val;
+      // if (val <= previousValue) {
+      //   return false;
+      // } else {
+      //   previousValue = val;
+      // }
+    // } catch (e) {
       // we have always an int
-    }
+    // }
   }
 
   return true;

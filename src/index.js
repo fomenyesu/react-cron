@@ -1,8 +1,8 @@
-import Cron from './Cron'
-import InputCron from './InputCron';
-import './index.less';
+import Cron from "./Cron";
+import InputCron from "./InputCron";
+import "./index.less";
 
-export {
-    InputCron,
-    Cron,
-}
+export default {
+  InputCron,
+  Cron
+};
